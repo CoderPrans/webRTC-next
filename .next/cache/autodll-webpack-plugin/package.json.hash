@@ -1,1 +1,0 @@
-{"name":"web-chat","version":"1.0.0","description":"A chat web based chat application","main":"index.js","scripts":{"dev":"next","build":"next build","start":"next start"},"author":{"name":"Pranav Bhaskar"},"license":"ISC","dependencies":{"next":"^9.0.2","react":"^16.8.6","react-dom":"^16.8.6"},"readme":"ERROR: No README data found!","_id":"web-chat@1.0.0"}
