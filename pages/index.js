@@ -1,52 +1,62 @@
 import Layout from '../components/layout.js';
 import {useState, useEffect} from 'react';
-import RTCinit from '../RTCinit.js';
+import {RTCinit} from '../RTCinit.js';
 
 const IndexPage = () => {
   const [name, setName] = useState('');
+  const [message, setMessage] = useState('');
   const [showbox, setShowbox] = useState(true);
 
-  const doChatShit = () => {
-    alert(`Welcome ${name}`);
-    setShowbox(false);
+  useEffect(() => {
+    // console.log(location);
+    RTCinit();
+  }, []);
+
+  const insertMessage = (options, isForMe) => {
+    console.log(options.content);
   };
 
-  useEffect(() => {
-    console.log(location);
-    RTCinit();
-  });
+  // console.log(datachannel);
 
   return (
     <Layout>
-      <h1>Welcome to Web-Chat{!showbox && `, ${name}`}</h1>
-      {showbox && (
-        <div className="welcome-box">
-          <input
-            placeholder="your name ?"
-            onChange={e => setName(e.target.value)}
-            onKeyPress={e => {
-              e.which === 13 ? doChatShit() : null;
-            }}
-            value={name}
-            style={{
-              width: 130,
-              padding: '8px',
-              margin: '10px',
-              fontSize: 16,
-              borderRadius: 2,
-              border: '1px solid #DDD',
-            }}
-          />
-          <br />
-          <button onClick={doChatShit}>Enter</button>
-        </div>
-      )}
       <div className="content">
+        <h1>Web-Chat</h1>
+        {showbox && (
+          <div className="welcome-box">
+            <input
+              className="name-input"
+              placeholder="your name ?"
+              onChange={e => setName(e.target.value)}
+              onKeyPress={e => {
+                e.which === 13 ? alert(`Welcome ${name}`) : null;
+              }}
+              value={name}
+            />
+            <br />
+            {
+              // <button
+              //   className="enter-button"
+              //   onClick={() => alert(`Welcome ${name}`)}>
+              //   Enter
+              // </button>
+            }
+          </div>
+        )}
         <div className="messages" />
-        <form className="footer" onsubmit="return false;">
-          <input type="text" placeholder="Your message.." />
-          <button type="submit">Send</button>
-        </form>
+        <div className="footer">
+          <input
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            onKeyPress={e => {
+              e.which === 13 ? insertMessage({content: message}, false) : null;
+            }}
+            placeholder="Your message.."
+          />
+          <button onClick={() => insertMessage({content: message}, false)}>
+            Send
+          </button>
+        </div>
       </div>
 
       <template data-template="message">
@@ -58,16 +68,22 @@ const IndexPage = () => {
       <style jsx>{`
         h1 {
           font-family: Arial;
+          display: flex;
+          justify-content: center;
+          color: rgba(0, 0, 255, 0.5);
         }
-        button {
+        .welcome-box {
+          display: flex;
+          justify-contnet: center;
+        }
+        .name-input {
+          width: 130px;
           padding: 8px;
-          margin: 0 10px;
-          font-size: 15px;
-          font-style: bold;
-          background-color: #4285f4;
-          border-radius: 3px;
-          color: white;
-          border: none;
+          height: 35px;
+          margin: 10px;
+          fontsize: 16px;
+          borderradius: 2px;
+          border: 1px solid #ddd;
         }
         .content {
           box-shadow: rgba(156, 172, 172, 0.2) 0px 2px 2px,
@@ -77,10 +93,11 @@ const IndexPage = () => {
             rgba(156, 172, 172, 0.2) 0px 32px 32px,
             rgba(156, 172, 172, 0.2) 0px 64px 64px;
           border-radius: 3px;
-          height: 100vh;
-          max-height: 600px;
+          height: 96vh;
+          max-height: 700px;
           width: 100vw;
           max-width: 400px;
+          margin: 0 auto;
           display: flex;
           flex-direction: column;
         }

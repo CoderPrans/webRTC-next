@@ -8,6 +8,7 @@ const Layout = ({children}) => (
         type="text/javascript"
         src="https://cdn.scaledrone.com/scaledrone.min.js"
       />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </Head>
     {children}
   </div>
