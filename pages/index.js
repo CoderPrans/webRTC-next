@@ -14,6 +14,7 @@ class IndexPage extends React.Component {
       color: randomColor(),
       username: randomName(),
     },
+    chatOpened: false,
   };
 
   componentDidMount() {
@@ -29,6 +30,7 @@ class IndexPage extends React.Component {
       console.log('hear me .............', member);
       member.id = this.drone.clientId;
       this.setState({member});
+      this.setState({chatOpened: true});
     });
 
     const room = this.drone.subscribe('observable-room');
@@ -54,12 +56,15 @@ class IndexPage extends React.Component {
     return (
       <Layout>
         <div className="App">
-          <h1 className="hello">Web-Chat</h1>
+          <h1 className="hello">web-chat</h1>
           <Messages
             messages={this.state.messages}
             currentMember={this.state.member}
           />
-          <Input onSendMessage={this.onSendMessage} />
+          <Input
+            onSendMessage={this.onSendMessage}
+            chatOpened={this.state.chatOpened}
+          />
         </div>
         <style jsx global>{`
           body {
@@ -67,10 +72,10 @@ class IndexPage extends React.Component {
             padding: 0;
           }
           .hello {
-            background: #555;
+            background: #222;
             font-family: Arial;
             color: white;
-            padding: 10px;
+            padding: 15px;
             text-align: center;
             margin: 0;
           }
@@ -93,7 +98,7 @@ class IndexPage extends React.Component {
           .Messages-message {
             display: flex;
             margin-top: 10px;
-            font-family: serif;
+            font-family: Helvetica;
             font-size: 18px;
           }
           .Messages-message.currentMember {
@@ -130,7 +135,7 @@ class IndexPage extends React.Component {
             display: inline-block;
           }
           .currentMember > .Message-content .text {
-            background-color: orangered;
+            background-color: limegreen;
           }
           form {
             display: flex;
@@ -145,6 +150,7 @@ class IndexPage extends React.Component {
             font-size: 19px;
             border-radius: 3px;
             border: none;
+            border-right: 1px solid #ddd;
             flex-grow: 1;
           }
           button {
@@ -153,7 +159,6 @@ class IndexPage extends React.Component {
             background-color: white;
             color: black;
             border: none;
-            border-radius: 8px;
           }
         `}</style>
       </Layout>
