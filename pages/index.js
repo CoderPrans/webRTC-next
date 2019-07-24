@@ -1,159 +1,175 @@
 import Layout from '../components/layout.js';
-import {useState, useEffect} from 'react';
-import {RTCinit} from '../RTCinit.js';
+import Messages from '../components/messages.js';
+import Input from '../components/input.js';
+import randomName from '../components/randomName.js';
 
-const IndexPage = () => {
-  const [name, setName] = useState('');
-  const [message, setMessage] = useState('');
-  const [showbox, setShowbox] = useState(true);
+function randomColor() {
+  return '#' + Math.floor(Math.random() * 0xffffff).toString(16);
+}
 
-  useEffect(() => {
-    // console.log(location);
-    RTCinit();
-  }, []);
-
-  const insertMessage = (options, isForMe) => {
-    console.log(options.content);
+class IndexPage extends React.Component {
+  state = {
+    messages: [],
+    member: {
+      color: randomColor(),
+      username: randomName(),
+    },
   };
 
-  // console.log(datachannel);
+  componentDidMount() {
+    this.drone = new Scaledrone('c4l8B2ejDQcIBLKi', {
+      data: this.state.member,
+    });
 
-  return (
-    <Layout>
-      <div className="content">
-        <h1>Web-Chat</h1>
-        {showbox && (
-          <div className="welcome-box">
-            <input
-              className="name-input"
-              placeholder="your name ?"
-              onChange={e => setName(e.target.value)}
-              onKeyPress={e => {
-                e.which === 13 ? alert(`Welcome ${name}`) : null;
-              }}
-              value={name}
-            />
-            <br />
-            {
-              // <button
-              //   className="enter-button"
-              //   onClick={() => alert(`Welcome ${name}`)}>
-              //   Enter
-              // </button>
-            }
-          </div>
-        )}
-        <div className="messages" />
-        <div className="footer">
-          <input
-            value={message}
-            onChange={e => setMessage(e.target.value)}
-            onKeyPress={e => {
-              e.which === 13 ? insertMessage({content: message}, false) : null;
-            }}
-            placeholder="Your message.."
+    this.drone.on('open', error => {
+      if (error) {
+        return console.error(error);
+      }
+      const member = {...this.state.member};
+      member.id = this.drone.clientId;
+      this.setState({member});
+    });
+
+    const room = this.drone.subscribe('observable-room');
+
+    room.on('data', (data, member) => {
+      const messages = this.state.messages;
+      messages.push({member, text: data});
+      // const messages = [...this.state.messages, {member, text: data}];
+      this.setState({messages});
+    });
+  }
+
+  onSendMessage = message => {
+    console.log('Calling onSendMessage');
+    this.drone.publish({
+      room: 'observable-room',
+      message,
+    });
+    console.log(this.state.messages);
+  };
+
+  render() {
+    return (
+      <Layout>
+        <div className="App">
+          <h1 className="hello">Web-Chat</h1>
+          <Messages
+            messages={this.state.messages}
+            currentMember={this.state.member}
           />
-          <button onClick={() => insertMessage({content: message}, false)}>
-            Send
-          </button>
+          <Input onSendMessage={this.onSendMessage} />
         </div>
-      </div>
+        <style jsx global>{`
+          body {
+            margin: 0;
+            padding: 0;
+          }
+          .hello {
+            background: #555;
+            font-family: Arial;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            margin: 0;
+          }
+          .App {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+          }
 
-      <template data-template="message">
-        <div className="message">
-          <div className="message__name" />
-          <div className="message__bubble" />
-        </div>
-      </template>
-      <style jsx>{`
-        h1 {
-          font-family: Arial;
-          display: flex;
-          justify-content: center;
-          color: rgba(0, 0, 255, 0.5);
-        }
-        .welcome-box {
-          display: flex;
-          justify-contnet: center;
-        }
-        .name-input {
-          width: 130px;
-          padding: 8px;
-          height: 35px;
-          margin: 10px;
-          fontsize: 16px;
-          borderradius: 2px;
-          border: 1px solid #ddd;
-        }
-        .content {
-          box-shadow: rgba(156, 172, 172, 0.2) 0px 2px 2px,
-            rgba(156, 172, 172, 0.2) 0px 4px 4px,
-            rgba(156, 172, 172, 0.2) 0px 8px 8px,
-            rgba(156, 172, 172, 0.2) 0px 16px 16px,
-            rgba(156, 172, 172, 0.2) 0px 32px 32px,
-            rgba(156, 172, 172, 0.2) 0px 64px 64px;
-          border-radius: 3px;
-          height: 96vh;
-          max-height: 700px;
-          width: 100vw;
-          max-width: 400px;
-          margin: 0 auto;
-          display: flex;
-          flex-direction: column;
-        }
-        .messages {
-          flex-grow: 1;
-          padding: 20px 30px;
-          overflow: auto;
-        }
-        .message {
-          display: flex;
-          flex-direction: column;
-        }
-        .message--mine {
-          align-items: flex-end;
-        }
-        .message--theirs {
-          align-items: flex-start;
-        }
-        .message__name {
-          padding: 10px 0;
-        }
-        .message__bubble {
-          padding: 20px;
-          border-radius: 3px;
-        }
-        .message--theirs .message__bubble {
-          background: #6363bf;
-          color: white;
-        }
-        .message--mine .message__bubble {
-          background: rgba(156, 172, 172, 0.2);
-        }
-        .footer {
-          line-height: 76px;
-          border-top: 1px solid rgba(156, 172, 172, 0.2);
-          display: flex;
-          flex-shrink: 0;
-        }
-        input {
-          height: 76px;
-          border: none;
-          flex-grow: 1;
-          padding: 0 30px;
-          font-size: 16px;
-          background: transparent;
-        }
-        button {
-          border: none;
-          background: transparent;
-          padding: 0 30px;
-          font-size: 16px;
-          cursor: pointer;
-        }
-      `}</style>
-    </Layout>
-  );
-};
+          .Messages-list {
+            padding: 20px 0;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            list-style: none;
+            padding-left: 0;
+            flex-grow: 1;
+            overflow: auto;
+          }
+
+          .Messages-message {
+            display: flex;
+            margin-top: 10px;
+            font-family: serif;
+            font-size: 15px;
+          }
+
+          .Messages-message.currentMember {
+            /*justify-content: flex-end;*/
+            flex-direction: row-reverse;
+            text-align: right;
+          }
+
+          .Message-content {
+            display: inline-block;
+          }
+
+          .currentMember > .Message-content {
+            align-items: flex-end;
+          }
+
+          .Messages-message > .avatar {
+            height: 35px;
+            width: 35px;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 10px -10px;
+          }
+
+          .Message-content > .username {
+            display: block;
+            color: gray;
+            font-size: 14px;
+            padding-bottom: 4px;
+          }
+
+          .Message-content > .text {
+            padding: 10px;
+            max-width: 400px;
+            margin: 0;
+            border-radius: 12px;
+            background-color: cornflowerblue;
+            color: white;
+            display: inline-block;
+          }
+
+          .currentMember > .Message-content .text {
+            background-color: orangered;
+          }
+
+          form {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            max-width: 900px;
+            margin: 0 auto 40px;
+          }
+
+          input {
+            padding: 5px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid orangered;
+            flex-grow: 1;
+          }
+
+          button {
+            padding: 5px 10px;
+            font-size: 16px;
+            background-color: orangered;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-left: 10px;
+          }
+        `}</style>
+      </Layout>
+    );
+  }
+}
 
 export default IndexPage;
