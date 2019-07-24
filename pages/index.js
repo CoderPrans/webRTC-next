@@ -72,7 +72,7 @@ class IndexPage extends React.Component {
             padding: 0;
           }
           .hello {
-            background: #222;
+            background: #333;
             font-family: Arial;
             color: white;
             padding: 15px;
@@ -140,14 +140,14 @@ class IndexPage extends React.Component {
           form {
             display: flex;
             width: 100%;
-            max-width: 900px;
+            max-width: 95vw;
             margin: 0 auto;
             border: 1px solid #ddd;
           }
           input {
             padding: 0 30px;
             height: 60px;
-            font-size: 19px;
+            font-size: 17px;
             border-radius: 3px;
             border: none;
             border-right: 1px solid #ddd;
@@ -155,7 +155,7 @@ class IndexPage extends React.Component {
           }
           button {
             padding: 5px 10px;
-            font-size: 20px;
+            font-size: 17px;
             background-color: white;
             color: black;
             border: none;
