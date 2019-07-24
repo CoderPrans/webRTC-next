@@ -25,7 +25,7 @@ const Input = props => {
                 autoFocus={true}
                 disabled={isDisabled}
               />
-              <button type="submit">Send</button>
+              <button type="submit">SEND</button>
             </>
           ) : (
             <span style={{textAlign: 'center'}}>Loading .... </span>

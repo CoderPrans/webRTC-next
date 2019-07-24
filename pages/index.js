@@ -26,6 +26,7 @@ class IndexPage extends React.Component {
         return console.error(error);
       }
       const member = {...this.state.member};
+      console.log('hear me .............', member);
       member.id = this.drone.clientId;
       this.setState({member});
     });
@@ -76,10 +77,9 @@ class IndexPage extends React.Component {
           .App {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            jusify-content: space-between;
             height: 100vh;
           }
-
           .Messages-list {
             padding: 20px 0;
             max-width: 900px;
@@ -90,28 +90,23 @@ class IndexPage extends React.Component {
             flex-grow: 1;
             overflow: auto;
           }
-
           .Messages-message {
             display: flex;
             margin-top: 10px;
             font-family: serif;
-            font-size: 15px;
+            font-size: 18px;
           }
-
           .Messages-message.currentMember {
             /*justify-content: flex-end;*/
             flex-direction: row-reverse;
             text-align: right;
           }
-
           .Message-content {
             display: inline-block;
           }
-
           .currentMember > .Message-content {
             align-items: flex-end;
           }
-
           .Messages-message > .avatar {
             height: 35px;
             width: 35px;
@@ -119,14 +114,12 @@ class IndexPage extends React.Component {
             display: inline-block;
             margin: 0 10px -10px;
           }
-
           .Message-content > .username {
             display: block;
             color: gray;
             font-size: 14px;
             padding-bottom: 4px;
           }
-
           .Message-content > .text {
             padding: 10px;
             max-width: 400px;
@@ -136,35 +129,31 @@ class IndexPage extends React.Component {
             color: white;
             display: inline-block;
           }
-
           .currentMember > .Message-content .text {
             background-color: orangered;
           }
-
           form {
             display: flex;
             width: 100%;
-            justify-content: space-between;
             max-width: 900px;
-            margin: 0 auto 40px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
           }
-
           input {
-            padding: 5px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid orangered;
+            padding: 0 30px;
+            height: 60px;
+            font-size: 19px;
+            border-radius: 3px;
+            border: none;
             flex-grow: 1;
           }
-
           button {
             padding: 5px 10px;
-            font-size: 16px;
-            background-color: orangered;
-            color: white;
+            font-size: 20px;
+            background-color: white;
+            color: black;
             border: none;
             border-radius: 8px;
-            margin-left: 10px;
           }
         `}</style>
       </Layout>
